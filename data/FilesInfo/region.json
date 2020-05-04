@@ -1,0 +1,19 @@
+{
+  "fileName" : "region",
+  "filePath" : "hdfs://nodemaster:9000/user/hive/warehouse/region/region.tbl",
+  "fileSize" : 389,
+  "blockLocations" : [ {
+    "blockId" : "blk_1073741870_1046",
+    "blockLocation" : {
+      "hosts" : [ "node5", "node6", "node3" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.6:9866", "172.18.0.7:9866", "172.18.0.4:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.6:9866", "/default-rack/172.18.0.7:9866", "/default-rack/172.18.0.4:9866" ],
+      "storageIds" : [ "DS-d84fb71c-3390-4ae0-a2e1-49eed0a65bbc", "DS-5ab9392b-e32f-4988-b6f1-9b281a3bf9ea", "DS-9db6079d-d710-44b7-9911-acaf5ddaf62b" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 0,
+      "length" : 389,
+      "corrupt" : false
+    }
+  } ]
+}

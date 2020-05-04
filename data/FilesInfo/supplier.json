@@ -1,0 +1,19 @@
+{
+  "fileName" : "supplier",
+  "filePath" : "hdfs://nodemaster:9000/user/hive/warehouse/supplier/supplier.tbl",
+  "fileSize" : 7088217,
+  "blockLocations" : [ {
+    "blockId" : "blk_1073741826_1002",
+    "blockLocation" : {
+      "hosts" : [ "node3", "node4", "node2" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.4:9866", "172.18.0.5:9866", "172.18.0.3:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.4:9866", "/default-rack/172.18.0.5:9866", "/default-rack/172.18.0.3:9866" ],
+      "storageIds" : [ "DS-9db6079d-d710-44b7-9911-acaf5ddaf62b", "DS-3650b02e-6acc-4a8e-865e-4d23923df172", "DS-2fd2261a-9623-41e5-9249-2cac4ed146bf" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 0,
+      "length" : 7088217,
+      "corrupt" : false
+    }
+  } ]
+}
