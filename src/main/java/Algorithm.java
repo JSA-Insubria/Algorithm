@@ -35,14 +35,14 @@ public class Algorithm {
         System.out.println(coOccurrenceMatrix.toString());
 
 
-        if (!true) {
-            ConstraintsProblemSolver constraintsProblemSolver = new ConstraintsProblemSolver(nodeList, files,
-                    coOccurrenceMatrix, fillQueries.getTableList());
-            constraintsProblemSolver.init();
-        } else {
+        if (true) {
             ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
                     files, coOccurrenceMatrix, fillQueries.getTableList());
             constraintsProblemSolverPareto.init();
+        } else {
+            ConstraintsProblemSolver constraintsProblemSolver = new ConstraintsProblemSolver(nodeList, files,
+                    coOccurrenceMatrix, fillQueries.getTableList());
+            constraintsProblemSolver.init();
         }
 
     }

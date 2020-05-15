@@ -56,20 +56,18 @@ public class ConstraintsProblemSolverPareto {
         insertConstraints(model);
 
         Solver solver = model.getSolver();
-        solver.limitSolution(8);
-        solver.solve();
-
-        insertConstraints(model);
+        solver.limitTime("1m");
         solver.solve();
 
         List<Solution> solutions = solver.findParetoFront(z, true);
         for (Solution solution : solutions) {
             System.out.println(solution.toString());
 
+            String print = "";
             for (int i = 0; i < numNodes; i++) {
-                System.out.print(solution.getIntVal(z[i]) + ",");
+                print = print.concat(solution.getIntVal(z[i]) + ",");
             }
-            System.out.print("\n");
+            printVarSolution(print);
 
             prettyPrint(solution);
         }
@@ -191,6 +189,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void printVarSolution(String line) {
+        System.out.print(line);
         File fileName = new File(System.getProperty("user.home") + File.separator + "var.txt");
         try {
             FileWriter myWriter = new FileWriter(fileName, true);

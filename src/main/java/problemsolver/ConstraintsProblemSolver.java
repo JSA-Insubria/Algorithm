@@ -59,10 +59,6 @@ public class ConstraintsProblemSolver {
         insertConstraints(model);
 
         Solver solver = model.getSolver();
-        solver.solve();
-
-        insertConstraints(model);
-
         solver.limitSolution(8);
         solver.solve();
 
