@@ -1,6 +1,5 @@
 package problemsolver;
 
-
 import cooccurrence.CoOccurrenceMatrix;
 import model.Block;
 import model.DataFile;
@@ -11,14 +10,12 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
-public class ConstraintsProblemSolver {
+public class ConstraintsProblemSolverPareto {
 
     private final List<Node> nodeList;
     private final Map<String, DataFile> filesMap;
@@ -41,8 +38,8 @@ public class ConstraintsProblemSolver {
     private IntVar[][] x;
     private IntVar[] z;
 
-    public ConstraintsProblemSolver(List<Node> nodeList, Map<String, DataFile> filesMap,
-                CoOccurrenceMatrix coOccurrenceMatrix, Map<String, Table> tableMap) {
+    public ConstraintsProblemSolverPareto(List<Node> nodeList, Map<String, DataFile> filesMap,
+                                          CoOccurrenceMatrix coOccurrenceMatrix, Map<String, Table> tableMap) {
         this.nodeList = nodeList;
         this.filesMap = filesMap;
         this.coOccurrenceMatrix = coOccurrenceMatrix;
@@ -59,14 +56,13 @@ public class ConstraintsProblemSolver {
         insertConstraints(model);
 
         Solver solver = model.getSolver();
-        solver.solve();
-
-        insertConstraints(model);
-
         solver.limitSolution(8);
         solver.solve();
 
-        List<Solution> solutions = solver.findAllSolutions();
+        insertConstraints(model);
+        solver.solve();
+
+        List<Solution> solutions = solver.findParetoFront(z, true);
         for (Solution solution : solutions) {
             System.out.println(solution.toString());
 
@@ -106,7 +102,6 @@ public class ConstraintsProblemSolver {
             }
             model.scalar(items, replicasSize, "<", nodesCapacity[i]).post();
             model.scalar(items, weight, "=", z[i]).post();
-            model.setObjective(true, z[i]);
         }
     }
 
@@ -293,5 +288,4 @@ public class ConstraintsProblemSolver {
             return new FilePosLen(pos, len, filePosLen1.getWeight());
         }
     }
-
 }

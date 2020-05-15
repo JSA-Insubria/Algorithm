@@ -5,7 +5,7 @@ import fill.FillNodes;
 import fill.FillQueries;
 import model.*;
 import problemsolver.ConstraintsProblemSolver;
-import problemsolver.Temp;
+import problemsolver.ConstraintsProblemSolverPareto;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -35,12 +35,15 @@ public class Algorithm {
         System.out.println(coOccurrenceMatrix.toString());
 
 
-        ConstraintsProblemSolver constraintsProblemSolver = new ConstraintsProblemSolver(nodeList, files,
-                coOccurrenceMatrix, fillQueries.getTableList());
-        constraintsProblemSolver.init();
-
-        //Temp temp = new Temp(nodeList, files, coOccurrenceMatrix, fillQueries.getTableList());
-        //temp.init();
+        if (!true) {
+            ConstraintsProblemSolver constraintsProblemSolver = new ConstraintsProblemSolver(nodeList, files,
+                    coOccurrenceMatrix, fillQueries.getTableList());
+            constraintsProblemSolver.init();
+        } else {
+            ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
+                    files, coOccurrenceMatrix, fillQueries.getTableList());
+            constraintsProblemSolverPareto.init();
+        }
 
     }
 

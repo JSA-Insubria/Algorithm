@@ -36,13 +36,6 @@
             <version>4.10.2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.github.oliviercailloux/google-or-tools -->
-        <dependency>
-            <groupId>io.github.oliviercailloux</groupId>
-            <artifactId>google-or-tools</artifactId>
-            <version>6.7.2</version>
-        </dependency>
-
     </dependencies>
 
 
