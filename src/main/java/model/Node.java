@@ -4,6 +4,7 @@ public class Node {
 
     private String ipAddr;
     private String hostName;
+    private String name;
     private String uuid;
     private String networkLocation;
     private long capacity;
@@ -13,9 +14,10 @@ public class Node {
 
     public Node() {}
 
-    public Node(String ipAddr, String hostName, String uuid, String networkLocation, long capacity, long dfsUsed, long nonDfsUsed, long remaining) {
+    public Node(String ipAddr, String hostName, String name, String uuid, String networkLocation, long capacity, long dfsUsed, long nonDfsUsed, long remaining) {
         this.ipAddr = ipAddr;
         this.hostName = hostName;
+        this.name = name;
         this.uuid = uuid;
         this.networkLocation = networkLocation;
         this.capacity = capacity;
@@ -38,6 +40,14 @@ public class Node {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUuid() {

@@ -8,6 +8,8 @@ import model.Table;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.Search.*;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.io.File;
@@ -24,7 +26,6 @@ public class ConstraintsProblemSolverPareto {
 
     private int numNodes;
     private int[] nodesCapacity;
-    private List<String> nodesName;
 
     private int numItems;
     private int[] replicasSize;
@@ -34,7 +35,6 @@ public class ConstraintsProblemSolverPareto {
     private LinkedList<String> files; //Elenco file
     private LinkedList<Integer> nBlocks; //Elenco numero blocchi della lista file sopra, stesso ordine!
 
-    private int[][] originalX;
     private IntVar[][] x;
     private IntVar[] z;
 
@@ -56,21 +56,38 @@ public class ConstraintsProblemSolverPareto {
         insertConstraints(model);
 
         Solver solver = model.getSolver();
-        solver.limitTime("1m");
+
+        solver.limitTime("1h");
         solver.solve();
 
         List<Solution> solutions = solver.findParetoFront(z, true);
-        for (Solution solution : solutions) {
-            System.out.println(solution.toString());
 
+
+        String firstLine = "";
+        for (int n = 0; n < numNodes; n++) {
+            if (n == numNodes-1) {
+                firstLine = firstLine.concat(nodeList.get(n).getHostName());
+            } else {
+                firstLine = firstLine.concat(nodeList.get(n).getHostName() + ",");
+            }
+        }
+        printIntoFile("var.txt", firstLine);
+
+        int n_solution = 1;
+        for (Solution solution : solutions) {
             String print = "";
             for (int i = 0; i < numNodes; i++) {
-                print = print.concat(solution.getIntVal(z[i]) + ",");
+                if (i == z.length-1) {
+                    print = print.concat("" + solution.getIntVal(z[i]));
+                } else {
+                    print = print.concat(solution.getIntVal(z[i]) + ",");
+                }
             }
-            printVarSolution(print);
-
-            prettyPrint(solution);
+            printIntoFile("var.txt", print);
+            printIntoFile("solutions.txt", "\n" + print);
+            prettyPrint(solution, n_solution++);
         }
+        solver.printStatistics();
     }
 
     private void insertConstraints(Model model) {
@@ -78,21 +95,29 @@ public class ConstraintsProblemSolverPareto {
         List<FilePosLen> filesIndexToMove = getValue(matrix);
 
         Map<Integer, Integer> positionMap = positionToMap(filesIndexToMove);
-
         int[] weight = new int[positionMap.size()];
+        int weightSum = 0;
         for (int m = 0; m < positionMap.size(); m++) {
             weight[m] = positionMap.get(m);
+            weightSum += weight[m];
         }
 
-        //Objective Variable Declaration
-        //IntVar z = model.intVar(1, 1000000);
-        z = model.intVarArray(numNodes, 1, 1000000);
-
+        IntVar[] sum = model.intVarArray(numItems, replica_factor, numNodes);
         for (int i = 0; i < numItems; i++) {
-            model.sum(x[i], ">=", replica_factor).post();
-            model.sum(x[i], "<=", numNodes).post();
+            model.sum(x[i], "=", sum[i]).post();
         }
 
+        int nFile = 0, block = 1;
+        for (int i = 0; i < numItems; i++) {
+            if ((nBlocks.get(nFile) > 1) && !(block == nBlocks.get(nFile))) {
+                model.arithm(sum[i], "=", sum[i+1]).post();
+            }
+            if (++block > nBlocks.get(nFile)) {
+                nFile++; block = 1;
+            }
+        }
+
+        z = model.intVarArray(numNodes, 1, weightSum);
         for (int i = 0; i < numNodes; i++) {
             IntVar[] items = new IntVar[numItems];
             for (int j = 0; j < numItems; j++) {
@@ -188,9 +213,10 @@ public class ConstraintsProblemSolverPareto {
         replicasSize = filesList.stream().mapToInt(i -> i).toArray();
     }
 
-    private void printVarSolution(String line) {
+    private void printIntoFile(String file, String line) {
         System.out.print(line);
-        File fileName = new File(System.getProperty("user.home") + File.separator + "var.txt");
+        String path = "/home/simone/Documenti/Università/Tesi/Algoritmo/files";
+        File fileName = new File(path + File.separator + file);
         try {
             FileWriter myWriter = new FileWriter(fileName, true);
             myWriter.write(line + "\n");
@@ -200,21 +226,29 @@ public class ConstraintsProblemSolverPareto {
         }
     }
 
-
-    private void prettyPrint(Solution solution) {
-        System.out.print("\n\t\t");
+    private void prettyPrint(Solution solution, int n_solution) {
+        StringBuilder hadoop_sol = new StringBuilder();
+        String print = "\n\t";
         for (int n = 0; n < numNodes; n++) {
-            System.out.print(nodeList.get(n).getHostName() + "(" + nodesCapacity[n] + ")" + "\t");
+            print = print.concat(nodeList.get(n).getHostName() + "(" + nodesCapacity[n] + ")" + "\t");
         }
-        System.out.print("\n");
+        print = print.concat("\n");
         int nfile = 0, block = 1;
         for (int i = 0; i < numItems; i++) {
-            System.out.print("T_" + (nfile+1) + "_" + block++ + ": ");
+            print = print.concat("T_" + (nfile+1) + "_" + block++ + ":" + "\t");
+            hadoop_sol.append(files.get(nfile)).append(",");
             for (int j = 0; j < numNodes; j++) {
-                System.out.print(solution.getIntVal(x[i][j]) + "\t\t\t\t");
+                int val = solution.getIntVal(x[i][j]);
+                print = print.concat(val + "\t\t");
+                if (val == 1) {
+                    hadoop_sol.append(nodeList.get(j).getName()).append(",");
+                }
+                if (j+1 == numNodes) {
+                    hadoop_sol.replace(hadoop_sol.length()-1, hadoop_sol.length(), "");
+                    hadoop_sol.append("\n");
+                }
             }
-            System.out.print(" - " + files.get(nfile) + " blk: " + (block-1) + " - " + replicasSize[i]);
-            System.out.print("\n");
+            print = print.concat(" - " + files.get(nfile) + " blk: " + (block-1) + " - " + replicasSize[i] + "\n");
             if (block > nBlocks.get(nfile)) {
                 nfile++;
                 block = 1;
@@ -230,10 +264,12 @@ public class ConstraintsProblemSolverPareto {
             }
         }
 
-        System.out.print("sum: " + "\t");
+        print = print.concat("sum:" + "\t");
         for (int n = 0; n < numNodes; n++) {
-            System.out.print(sumXNode[n] + "\t\t\t");
+            print = print.concat(sumXNode[n] + "\t\t");
         }
+        printIntoFile("solutions.txt", print);
+        printIntoFile("FilesLocation_" + n_solution + ".txt", hadoop_sol.toString());
     }
 
 
@@ -253,24 +289,12 @@ public class ConstraintsProblemSolverPareto {
             return position;
         }
 
-        public void setPosition(int[] position) {
-            this.position = position;
-        }
-
         public int[] getFileLen() {
             return fileLen;
         }
 
-        public void setFileLen(int[] fileLen) {
-            this.fileLen = fileLen;
-        }
-
         public int getWeight() {
             return weight;
-        }
-
-        public void setWeight(int weight) {
-            this.weight = weight;
         }
 
         public static FilePosLen merge(FilePosLen filePosLen1, FilePosLen filePosLen2) {

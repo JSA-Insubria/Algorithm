@@ -41,6 +41,7 @@ public class FillNodes {
     private Node getNodeData(JSONObject jsonObject) {
         return new Node(String.valueOf(jsonObject.get("ipAddr")),
                 String.valueOf(jsonObject.get("hostName")),
+                String.valueOf(jsonObject.get("name")),
                 String.valueOf(jsonObject.get("datanodeUuid")),
                 String.valueOf(jsonObject.get("networkLocation")),
                 Long.parseLong(String.valueOf(jsonObject.get("capacity"))),

@@ -3,6 +3,10 @@ package cooccurrence;
 import model.Query;
 import model.Table;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class PreCoOccurrenceMatrix {
@@ -33,12 +37,13 @@ public class PreCoOccurrenceMatrix {
             matrix[0][i++] = table.getName();
         }
         int j = 1;
+        int[] qNums = readQueriesTimes();
         List<String> matrix0 = Arrays.asList(matrix[0]);
         for (Map.Entry<Integer, Query> map : queryMap.entrySet()) {
             matrix[j][0] = String.valueOf(map.getKey());
             List<Table> queryTables = map.getValue().getTables();
             for (Table table : queryTables) {
-                matrix[j][matrix0.indexOf(table.getName())] = String.valueOf(1);
+                matrix[j][matrix0.indexOf(table.getName())] = String.valueOf(qNums[j-1]);
             }
             j++;
         }
@@ -93,6 +98,24 @@ public class PreCoOccurrenceMatrix {
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    private int[] readQueriesTimes() {
+        int[] numbers = new int[matrix.length];
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("data/execute.sh"));
+            String line;
+            int i = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains("query/query-")) {
+                    numbers[i++] = Integer.parseInt(line.substring(line.indexOf("..")+2, line.indexOf("}")));
+                }
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return numbers;
     }
 
 }

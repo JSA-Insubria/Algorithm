@@ -1,3 +1,4 @@
+import benchmark.ParseTime;
 import cooccurrence.CoOccurrenceMatrix;
 import cooccurrence.PreCoOccurrenceMatrix;
 import fill.FillFiles;
@@ -34,6 +35,8 @@ public class Algorithm {
         coOccurrenceMatrix.init();
         System.out.println(coOccurrenceMatrix.toString());
 
+        ParseTime parseTime = new ParseTime(nodeList, files);
+        parseTime.test();
 
         if (true) {
             ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
