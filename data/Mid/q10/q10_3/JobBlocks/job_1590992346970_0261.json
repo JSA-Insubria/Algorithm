@@ -1,0 +1,60 @@
+{
+  "jobName" : "job_1590992346970_0261",
+  "paths" : [ "hdfs://nodemaster:9000/user/hive/warehouse/customer", "hdfs://nodemaster:9000/user/hive/warehouse/nation" ],
+  "locations" : [ "node5", "node5" ],
+  "jobDataPaths" : [ {
+    "path" : "hdfs://nodemaster:9000/user/hive/warehouse/customer",
+    "filesList" : [ {
+      "file" : "HdfsLocatedFileStatus{path=hdfs://nodemaster:9000/user/hive/warehouse/customer/customer.tbl; isDirectory=false; length=122131132; replication=3; blocksize=134217728; modification_time=1590992427688; access_time=1591000331727; owner=hadoop; group=supergroup; permission=rw-r--r--; isSymlink=false; hasAcl=false; isEncrypted=false; isErasureCoded=false}",
+      "blockList" : [ {
+        "blockId" : 0,
+        "replicaList" : [ {
+          "replicaId" : 1,
+          "location" : "172.18.0.7:9866",
+          "storageId" : "DS-9a693320-2945-473b-8ee2-644b65389a80",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.7:9866"
+        }, {
+          "replicaId" : 2,
+          "location" : "172.18.0.3:9866",
+          "storageId" : "DS-bfdced66-0617-403d-8ee8-6a4aabc371e7",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.3:9866"
+        }, {
+          "replicaId" : 3,
+          "location" : "172.18.0.6:9866",
+          "storageId" : "DS-9f74f27c-ccfe-4c57-a283-e6ed57b54271",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.6:9866"
+        } ]
+      } ]
+    } ]
+  }, {
+    "path" : "hdfs://nodemaster:9000/user/hive/warehouse/nation",
+    "filesList" : [ {
+      "file" : "HdfsLocatedFileStatus{path=hdfs://nodemaster:9000/user/hive/warehouse/nation/nation.tbl; isDirectory=false; length=2224; replication=3; blocksize=134217728; modification_time=1590992469753; access_time=1591000365457; owner=hadoop; group=supergroup; permission=rw-r--r--; isSymlink=false; hasAcl=false; isEncrypted=false; isErasureCoded=false}",
+      "blockList" : [ {
+        "blockId" : 0,
+        "replicaList" : [ {
+          "replicaId" : 1,
+          "location" : "172.18.0.4:9866",
+          "storageId" : "DS-89c02848-f5cf-4e6e-b9df-ea30a83d59d4",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.4:9866"
+        }, {
+          "replicaId" : 2,
+          "location" : "172.18.0.3:9866",
+          "storageId" : "DS-bfdced66-0617-403d-8ee8-6a4aabc371e7",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.3:9866"
+        }, {
+          "replicaId" : 3,
+          "location" : "172.18.0.6:9866",
+          "storageId" : "DS-9f74f27c-ccfe-4c57-a283-e6ed57b54271",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.6:9866"
+        } ]
+      } ]
+    } ]
+  } ]
+}

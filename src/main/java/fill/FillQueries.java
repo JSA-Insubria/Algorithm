@@ -11,10 +11,7 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class FillQueries {
 
@@ -36,6 +33,7 @@ public class FillQueries {
         File directory = new File(path + "QueryDataBlocks");
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
+            Arrays.sort(folderFiles);
             for (File file : folderFiles) {
                 queryList.add(getQuery(file));
             }

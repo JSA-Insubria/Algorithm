@@ -1,11 +1,9 @@
-import benchmark.ParseTime;
 import cooccurrence.CoOccurrenceMatrix;
 import cooccurrence.PreCoOccurrenceMatrix;
 import fill.FillFiles;
 import fill.FillNodes;
 import fill.FillQueries;
 import model.*;
-import problemsolver.ConstraintsProblemSolver;
 import problemsolver.ConstraintsProblemSolverPareto;
 
 import java.io.File;
@@ -35,18 +33,9 @@ public class Algorithm {
         coOccurrenceMatrix.init();
         System.out.println(coOccurrenceMatrix.toString());
 
-        ParseTime parseTime = new ParseTime(nodeList, files);
-        parseTime.test();
-
-        if (true) {
-            ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
-                    files, coOccurrenceMatrix, fillQueries.getTableList());
-            constraintsProblemSolverPareto.init();
-        } else {
-            ConstraintsProblemSolver constraintsProblemSolver = new ConstraintsProblemSolver(nodeList, files,
-                    coOccurrenceMatrix, fillQueries.getTableList());
-            constraintsProblemSolver.init();
-        }
+        ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
+                files, coOccurrenceMatrix, fillQueries.getTableList());
+        constraintsProblemSolverPareto.init();
 
     }
 

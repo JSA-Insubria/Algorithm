@@ -8,10 +8,12 @@ import model.Table;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.objective.OptimizationPolicy;
+import org.chocosolver.solver.objective.ParetoOptimizer;
 import org.chocosolver.solver.search.strategy.Search;
-import org.chocosolver.solver.search.strategy.Search.*;
 import org.chocosolver.solver.variables.IntVar;
 
+import javax.jws.WebParam;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,16 +54,17 @@ public class ConstraintsProblemSolverPareto {
         getNodesInformation();
         getFilesInformation();
 
-        x = model.intVarMatrix(numItems, numNodes, 0, 1);
+        x = model.boolVarMatrix(numItems, numNodes);
         insertConstraints(model);
 
+        ParetoOptimizer paretoOptimizer = new ParetoOptimizer(Model.MAXIMIZE, z);
         Solver solver = model.getSolver();
+        solver.plugMonitor(paretoOptimizer);
 
-        solver.limitTime("1h");
-        solver.solve();
+        solver.limitTime("5h");
 
-        List<Solution> solutions = solver.findParetoFront(z, true);
-
+        while (solver.solve());
+        List<Solution> solutions = paretoOptimizer.getParetoFront();
 
         String firstLine = "";
         for (int n = 0; n < numNodes; n++) {
@@ -96,36 +99,44 @@ public class ConstraintsProblemSolverPareto {
 
         Map<Integer, Integer> positionMap = positionToMap(filesIndexToMove);
         int[] weight = new int[positionMap.size()];
-        int weightSum = 0;
+        int weightMax = 0, weightMin = Integer.MAX_VALUE;
         for (int m = 0; m < positionMap.size(); m++) {
             weight[m] = positionMap.get(m);
-            weightSum += weight[m];
-        }
-
-        IntVar[] sum = model.intVarArray(numItems, replica_factor, numNodes);
-        for (int i = 0; i < numItems; i++) {
-            model.sum(x[i], "=", sum[i]).post();
-        }
-
-        int nFile = 0, block = 1;
-        for (int i = 0; i < numItems; i++) {
-            if ((nBlocks.get(nFile) > 1) && !(block == nBlocks.get(nFile))) {
-                model.arithm(sum[i], "=", sum[i+1]).post();
-            }
-            if (++block > nBlocks.get(nFile)) {
-                nFile++; block = 1;
+            System.out.println(weight[m]);
+            weightMax += weight[m];
+            if (weight[m] < weightMin) {
+                weightMin = weight[m];
             }
         }
 
-        z = model.intVarArray(numNodes, 1, weightSum);
+        int nFile = 0;
+        for (int i = 0; i < numItems;) {
+            int num = nBlocks.get(nFile++);
+            if (num > 1) {
+                IntVar sumXBlock = model.intVar(replica_factor, numNodes);
+                for (int j = 0; j < num; j++) {
+                    model.sum(x[i++], "=", sumXBlock).post();
+                }
+            } else {
+                model.sum(x[i++], ">=", replica_factor).post();
+            }
+        }
+
+        IntVar[] sumXNode = model.intVarArray(numNodes, 1, IntVar.MAX_INT_BOUND);
+        z = model.intVarArray(numNodes, weightMin, weightMax, true);
         for (int i = 0; i < numNodes; i++) {
             IntVar[] items = new IntVar[numItems];
             for (int j = 0; j < numItems; j++) {
                 items[j] = x[j][i];
             }
-            model.scalar(items, replicasSize, "<", nodesCapacity[i]).post();
+            model.scalar(items, replicasSize, "<=", nodesCapacity[i]).post();
+            model.scalar(items, replicasSize, "=", sumXNode[i]).post();
             model.scalar(items, weight, "=", z[i]).post();
         }
+        //model.allEqual(sumXNode).post();
+        //IntVar capNNode = model.intVar(1, numNodes);
+        model.atMostNValues(sumXNode, model.intVar(1, numNodes), false).post();
+        //model.setObjective(true, capNNode);
     }
 
     private Map<Integer, Integer> positionToMap(List<FilePosLen> filesIndexToMove) {

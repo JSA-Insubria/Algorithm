@@ -6,11 +6,11 @@ public class MovedBlock {
     private String dest;
     private String block;
     private long bytes;
-    private long duration;
+    private double duration;
 
     public MovedBlock() {};
 
-    public MovedBlock(String src, String dest, String block, long bytes, long duration) {
+    public MovedBlock(String src, String dest, String block, long bytes, double duration) {
         this.src = src;
         this.dest = dest;
         this.block = block;
@@ -50,11 +50,11 @@ public class MovedBlock {
         this.bytes = bytes;
     }
 
-    public long getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 }

@@ -1,0 +1,19 @@
+{
+  "fileName" : "part",
+  "filePath" : "hdfs://nodemaster:9000/user/hive/warehouse/part/part.tbl",
+  "fileSize" : 121121810,
+  "blockLocations" : [ {
+    "blockId" : "blk_1073741825_1001",
+    "blockLocation" : {
+      "hosts" : [ "node2", "node4", "node5" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.3:9866", "172.18.0.5:9866", "172.18.0.6:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.3:9866", "/default-rack/172.18.0.5:9866", "/default-rack/172.18.0.6:9866" ],
+      "storageIds" : [ "DS-b163ea96-9263-4b2d-a045-c312e1f51c65", "DS-5c002689-4a91-4cd6-a3f1-d602f54c19a3", "DS-8bcaee5f-dd13-4da3-a99e-d402302beaa9" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 0,
+      "length" : 121121810,
+      "corrupt" : false
+    }
+  } ]
+}

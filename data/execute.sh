@@ -14,6 +14,7 @@ for i in {1..1}; do hive -f query/query-11.hql; done
 for i in {1..1}; do hive -f query/query-12.hql; done
 for i in {1..22}; do hive -f query/query-13.hql; done
 for i in {1..3}; do hive -f query/query-14.hql; done
+for i in {1..1}; do hive -f query/query-15.hql; done
 for i in {1..37}; do hive -f query/query-16.hql; done
 for i in {1..1}; do hive -f query/query-17.hql; done
 for i in {1..2}; do hive -f query/query-18.hql; done
