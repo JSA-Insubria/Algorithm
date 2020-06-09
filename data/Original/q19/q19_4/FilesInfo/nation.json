@@ -5,11 +5,11 @@
   "blockLocations" : [ {
     "blockId" : "blk_1073741869_1045",
     "blockLocation" : {
-      "hosts" : [ "node5", "node3", "node6" ],
+      "hosts" : [ "node11", "node6", "node2" ],
       "cachedHosts" : [ ],
-      "names" : [ "172.18.0.6:9866", "172.18.0.4:9866", "172.18.0.7:9866" ],
-      "topologyPaths" : [ "/default-rack/172.18.0.6:9866", "/default-rack/172.18.0.4:9866", "/default-rack/172.18.0.7:9866" ],
-      "storageIds" : [ "DS-cd9dc4a0-ff8a-49fc-ad28-4479a6051a03", "DS-e0da771e-309a-49ac-b088-cd0b8696abf5", "DS-2b4f867e-12c2-43c5-9334-1c8ef2b49569" ],
+      "names" : [ "172.18.0.12:9866", "172.18.0.7:9866", "172.18.0.3:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.12:9866", "/default-rack/172.18.0.7:9866", "/default-rack/172.18.0.3:9866" ],
+      "storageIds" : [ "DS-22f71b4d-d3e7-4bc9-b525-8517b2ff76d6", "DS-598b766a-a718-4430-9918-37f653df91f3", "DS-0ecba38f-7861-4e1d-ac79-2f9134245217" ],
       "storageTypes" : [ "DISK", "DISK", "DISK" ],
       "offset" : 0,
       "length" : 2224,

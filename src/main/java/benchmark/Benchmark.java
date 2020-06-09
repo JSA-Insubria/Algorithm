@@ -9,8 +9,8 @@ import java.util.*;
 
 public class Benchmark {
 
-    private static final String folder = "data/" + "Original/";
-    //private static final String folder = "data/" + "First/";
+    //private static final String folder = "data/" + "Original/";
+    private static final String folder = "data/" + "First/";
     //private static final String folder = "data/" + "Mid/";
     //private static final String folder = "data/" + "Last/";
 

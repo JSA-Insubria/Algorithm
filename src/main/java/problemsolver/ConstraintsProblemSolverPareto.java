@@ -8,15 +8,14 @@ import model.Table;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.objective.OptimizationPolicy;
 import org.chocosolver.solver.objective.ParetoOptimizer;
-import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.variables.IntVar;
 
-import javax.jws.WebParam;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class ConstraintsProblemSolverPareto {
@@ -61,7 +60,7 @@ public class ConstraintsProblemSolverPareto {
         Solver solver = model.getSolver();
         solver.plugMonitor(paretoOptimizer);
 
-        solver.limitTime("5h");
+        solver.limitTime("3h");
 
         while (solver.solve());
         List<Solution> solutions = paretoOptimizer.getParetoFront();
@@ -225,7 +224,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void printIntoFile(String file, String line) {
-        System.out.print(line);
+        //System.out.print(line);
         String path = "/home/simone/Documenti/Università/Tesi/Algoritmo/files";
         File fileName = new File(path + File.separator + file);
         try {

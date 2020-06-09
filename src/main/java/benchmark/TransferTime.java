@@ -117,7 +117,7 @@ public class TransferTime {
             double duration = Double.parseDouble(split[8].trim().substring(split[8].trim().indexOf(" ")).trim());
             String block = split[7].substring(split[7].lastIndexOf(":")+1);
             double seconds = duration / 1_000_000_000.0;
-            return new MovedBlock(src, dest, block, bytes/ (1024 * 1024), seconds);
+            return new MovedBlock(src, dest, block, bytes / (1024 * 1024), seconds);
         }
     }
 
