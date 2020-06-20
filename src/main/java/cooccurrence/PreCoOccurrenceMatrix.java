@@ -18,12 +18,8 @@ public class PreCoOccurrenceMatrix {
         this.queries = queries;
     }
 
-    public String[][] getPreCoOccurrenceMatrix() {
-        fillMatrix();
-        return matrix;
-    }
-
     public String[][] getMatrix() {
+        fillMatrix();
         return matrix;
     }
 

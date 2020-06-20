@@ -12,14 +12,11 @@ public class CoOccurrenceMatrix {
         this.preCoOccurrenceMatrix = preCoOccurrenceMatrix;
     }
 
-    public void init() {
+    public String[][] getMatrix() {
         List<String> tableList = Arrays.asList(preCoOccurrenceMatrix[0]);
         coOccurrenceMatrix = new String[tableList.size()][tableList.size()];
         fillZero(tableList);
         generateCoOccurrenceMatrix();
-    }
-
-    public String[][] getMatrix() {
         return coOccurrenceMatrix;
     }
 
