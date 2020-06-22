@@ -1,4 +1,4 @@
-package model;
+package problemsolver.model;
 
 // position is the index of the first block of a file in a node (columns of x)
 // fileLen is the number of blocks of a file

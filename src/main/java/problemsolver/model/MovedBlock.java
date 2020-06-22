@@ -1,4 +1,4 @@
-package model;
+package problemsolver.model;
 
 public class MovedBlock {
 
@@ -56,5 +56,9 @@ public class MovedBlock {
 
     public void setDuration(double duration) {
         this.duration = duration;
+    }
+
+    public String toString() {
+        return "Block: " + block + " - Duration: " + duration + " - Bytes: " + bytes;
     }
 }

@@ -1,10 +1,11 @@
 package problemsolver;
 
 import model.DataFile;
-import model.FilePosLen;
+import problemsolver.model.FilePosLen;
 import model.Table;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ComputeBlocksWeight {
 
@@ -33,23 +34,25 @@ public class ComputeBlocksWeight {
         return weightMax;
     }
 
-    //return an array of blocks weight
+    //return an array of blocks' weight
     public int[] getBlocksWeight() {
-        Map<Integer, Integer> positionMap = positionToMap();
+        // get map <index, weight> for each block
+        Map<Integer, Integer> positionMap = getMapFromCoOccurrenceMatrix();
+        // converting the map into an ordered array of weights
+        List<Integer> sortedKeys = new ArrayList<>(positionMap.keySet());
         int[] weight = new int[positionMap.size()];
-        for (int m = 0; m < positionMap.size(); m++) {
-            weight[m] = positionMap.get(m);
-            System.out.println(weight[m]);
-            weightMax += weight[m];
-            if (weight[m] < weightMin) {
-                weightMin = weight[m];
-            }
+        for (Integer integer : sortedKeys) {
+            weight[integer] = positionMap.get(integer);
+            System.out.println(weight[integer]);
         }
+        weightMin = Arrays.stream(weight).min().orElse(Integer.MAX_VALUE);
+        weightMax = Arrays.stream(weight).sum();
         return weight;
     }
 
-    // get map<position, weight> from Co-Occurrence Matrix
-    private Map<Integer, Integer> positionToMap() {
+    // get map<position of block, weight of block> from Co-Occurrence Matrix
+    // assigns a weight to each block, given by the sum of the weights of the tables where the block is used
+    private Map<Integer, Integer> getMapFromCoOccurrenceMatrix() {
         List<FilePosLen> filesIndexToMove = getCoOccurrenceValues();
         Map<Integer, Integer> map = new HashMap<>();
         for (FilePosLen filePosLen : filesIndexToMove) {
@@ -70,36 +73,44 @@ public class ComputeBlocksWeight {
         return map;
     }
 
-    // get starting block index of file, numbers of blocks of a file and the weight of file's blocks
+    // get the index of the first block of a file, numbers of blocks and the weight
     private List<FilePosLen> getCoOccurrenceValues() {
         List<FilePosLen> filePosLenList = new ArrayList<>();
         for (int i = 1; i < coOccurrenceMatrix.length; i++) {
             for (int j = i+1; j < coOccurrenceMatrix[i].length; j++) {
-                filePosLenList.add(FilePosLen.merge(getFileIndex(coOccurrenceMatrix[i][0], Integer.parseInt(coOccurrenceMatrix[i][j])),
-                        getFileIndex(coOccurrenceMatrix[0][j], Integer.parseInt(coOccurrenceMatrix[i][j]))));
+                // merges the indexes of the table files on the column with the indexes of the table files on the row
+                filePosLenList.add(FilePosLen.merge(getIndexFromTable(coOccurrenceMatrix[i][0], Integer.parseInt(coOccurrenceMatrix[i][j])),
+                        getIndexFromTable(coOccurrenceMatrix[0][j], Integer.parseInt(coOccurrenceMatrix[i][j]))));
                 System.out.println(coOccurrenceMatrix[i][0] + " -> " + coOccurrenceMatrix[0][j] + " -> " +  coOccurrenceMatrix[i][j]);
             }
         }
         return filePosLenList;
     }
 
-    // compute the index of the first block of a file in a node and get FilePosLen object
-    private FilePosLen getFileIndex(String tableName, int weight) {
+    // computes the indexes of the table's files
+    // returns a FilePosLenght object
+    // with the weights to be assigned to the block at the "pos" index and for the next "len" blocks
+    private FilePosLen getIndexFromTable(String tableName, int weight) {
         int q = 0;
         Table table = tableMap.get(tableName);
         int[] pos = new int[table.getFiles().size()];
         int[] len = new int[table.getFiles().size()];
+        // in the case of which the table consists of multiple files
         for (DataFile dataFile : table.getFiles()) {
-            String fileName = dataFile.getName();
-            int fileIndex = files.indexOf(fileName);
-            int sum = 0;
-            for (int i = 0; i < fileIndex; i++) {
-                sum += nBlocks.get(i);
-            }
-            pos[q] = sum;
+            pos[q] = getIndex(dataFile);
             len[q++] = dataFile.getBlockList().size();
         }
         return new FilePosLen(pos, len, weight);
+    }
+
+    private int getIndex(DataFile dataFile) {
+        String fileName = dataFile.getName();
+        int fileIndex = files.indexOf(fileName);
+        int index = 0;
+        for (int i = 0; i < fileIndex; i++) {
+            index += nBlocks.get(i);
+        }
+        return index;
     }
 
 }

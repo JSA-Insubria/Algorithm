@@ -41,14 +41,16 @@ public class Algorithm {
 
         ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
                 files, matrix, fillQueries.getTableList());
-        constraintsProblemSolverPareto.init();
+        constraintsProblemSolverPareto.findOptimalSolutions();
 
     }
 
     private static void createSolutionsFolder() {
         File solutionsPath = new File("data" + File.separator + "/solutions");
         try {
-            Files.walk(solutionsPath.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            if (solutionsPath.exists()) {
+                Files.walk(solutionsPath.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            }
             solutionsPath.mkdir();
         } catch (IOException e) {
             e.printStackTrace();

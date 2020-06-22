@@ -27,7 +27,7 @@ public class ConstraintsProblemSolverPareto {
     private LinkedList<Integer> nBlocks; //Elenco numero blocchi della lista file sopra, stesso ordine!
 
     private IntVar[][] x;
-    private IntVar[] z;
+    private IntVar[] z; //Pareto Variable
 
     public ConstraintsProblemSolverPareto(List<Node> nodeList, Map<String, DataFile> filesMap,
                                           String[][] coOccurrenceMatrix, Map<String, Table> tableMap) {
@@ -37,11 +37,8 @@ public class ConstraintsProblemSolverPareto {
         this.tableMap = tableMap;
     }
 
-    public void init() {
-        //Get nodes and files information
-        getNodesInformation();
-        getFilesInformation();
-        getReplicationFactor();
+    public void findOptimalSolutions() {
+        retrieveData();
 
         Model model = setModel();
         Solver solver = model.getSolver();
@@ -57,8 +54,15 @@ public class ConstraintsProblemSolverPareto {
         solver.printStatistics();
     }
 
+    //Get nodes and files information
+    private void retrieveData() {
+        getNodesInformation();
+        getFilesInformation();
+        getReplicationFactor();
+    }
+
     private void setSolverTimeLimit(Solver solverTimeLimit) {
-        solverTimeLimit.limitTime("3m");
+        solverTimeLimit.limitTime("3h");
     }
 
     private Model setModel() {
@@ -70,8 +74,11 @@ public class ConstraintsProblemSolverPareto {
 
     private void insertConstraints(Model model) {
         setReplicaConstraints(model);
+
+        //get weight of blocks
         ComputeBlocksWeight computeBlocksWeight = new ComputeBlocksWeight(files, nBlocks, coOccurrenceMatrix, tableMap);
         int[] weight = computeBlocksWeight.getBlocksWeight();
+
         setZBounds(model, computeBlocksWeight.getWeightMin(), computeBlocksWeight.getWeightMax());
         setNodeConstraints(model, weight);
     }
