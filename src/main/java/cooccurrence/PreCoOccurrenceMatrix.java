@@ -27,13 +27,21 @@ public class PreCoOccurrenceMatrix {
         List<Table> tableList = getTables();
         HashMap<Integer, Query> queryMap = getQueriesMap();
         matrix = new String[queryMap.size()+1][tableList.size()+1];
+        setColumnsName(tableList);
+        setMatrixValues(queryMap, readQueriesTimes());
+        fillZero();
+    }
+
+    private void setColumnsName(List<Table> tableList) {
         int i = 1;
         matrix[0][0] = "query/tables";
         for (Table table : tableList) {
             matrix[0][i++] = table.getName();
         }
+    }
+
+    private void setMatrixValues(HashMap<Integer, Query> queryMap, int[] qNums) {
         int j = 1;
-        int[] qNums = readQueriesTimes();
         List<String> matrix0 = Arrays.asList(matrix[0]);
         for (Map.Entry<Integer, Query> map : queryMap.entrySet()) {
             matrix[j][0] = String.valueOf(map.getKey());
@@ -43,7 +51,6 @@ public class PreCoOccurrenceMatrix {
             }
             j++;
         }
-        fillZero();
     }
 
     private void fillZero() {
@@ -67,6 +74,7 @@ public class PreCoOccurrenceMatrix {
         return queryMap;
     }
 
+    // get the tables used in the executed queries
     private List<Table> getTables() {
         List<Table> tableList = new ArrayList<>();
         List<String> tableCheck = new ArrayList<>();
@@ -96,6 +104,7 @@ public class PreCoOccurrenceMatrix {
         return stringBuilder.toString();
     }
 
+    // reads execute.sh to extract the number of time that a query is executed
     private int[] readQueriesTimes() {
         int[] numbers = new int[matrix.length];
         try {

@@ -15,12 +15,13 @@ public class CoOccurrenceMatrix {
     public String[][] getMatrix() {
         List<String> tableList = Arrays.asList(preCoOccurrenceMatrix[0]);
         coOccurrenceMatrix = new String[tableList.size()][tableList.size()];
-        fillZero(tableList);
+        addColumnName(tableList);
+        fillZero();
         generateCoOccurrenceMatrix();
         return coOccurrenceMatrix;
     }
 
-    private void fillZero(List<String> tableList) {
+    private void addColumnName(List<String> tableList) {
         coOccurrenceMatrix[0][0] = "query/tables";
         int f = 1;
         for (String table : tableList) {
@@ -31,6 +32,9 @@ public class CoOccurrenceMatrix {
             coOccurrenceMatrix[f][0] = table;
             f++;
         }
+    }
+
+    private void fillZero() {
         for (int i = 1; i < coOccurrenceMatrix.length; i++) {
             for (int j = 1; j < coOccurrenceMatrix[i].length; j++) {
                 coOccurrenceMatrix[i][j] = String.valueOf(0);
@@ -39,22 +43,18 @@ public class CoOccurrenceMatrix {
     }
 
     private void generateCoOccurrenceMatrix() {
-        List<String> matrix0 = Arrays.asList(coOccurrenceMatrix[0]);
+        List<String> matrix = Arrays.asList(coOccurrenceMatrix[0]);
         for (int i = 1; i < preCoOccurrenceMatrix.length; i++) {
             for (int j = 1; j < preCoOccurrenceMatrix[i].length; j++) {
                 if (!preCoOccurrenceMatrix[i][j].equals("0")) {
                     String tableName = preCoOccurrenceMatrix[0][j];
                     for (int q = 1; q < preCoOccurrenceMatrix[i].length; q++) {
-                        if (q == j) {
-                            continue;
-                        }
+                        if (q == j) continue;
                         if (!preCoOccurrenceMatrix[i][q].equals("0")) {
                             String thisTable = preCoOccurrenceMatrix[0][q];
-                            String value = coOccurrenceMatrix[matrix0.indexOf(thisTable)]
-                                    [matrix0.indexOf(tableName)];
+                            String value = coOccurrenceMatrix[matrix.indexOf(thisTable)][matrix.indexOf(tableName)];
                             int newValue = Integer.parseInt(value) + Integer.parseInt(preCoOccurrenceMatrix[i][q]);
-                            coOccurrenceMatrix[matrix0.indexOf(thisTable)][matrix0.indexOf(tableName)] =
-                                    String.valueOf(newValue);
+                            coOccurrenceMatrix[matrix.indexOf(thisTable)][matrix.indexOf(tableName)] = String.valueOf(newValue);
                         }
                     }
                 }
