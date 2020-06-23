@@ -48,6 +48,7 @@ public class PrettyPrint {
         }
     }
 
+    // print node name in var.txt
     private void printFirstLineVariableValue() {
         String firstLine = "";
         for (int n = 0; n < numNodes; n++) {
@@ -60,6 +61,7 @@ public class PrettyPrint {
         printIntoFile("var.txt", firstLine);
     }
 
+    //print values of z in var.txt and in solutions.txt
     private void printVariableValue(Solution solution) {
         String print = "";
         for (int i = 0; i < numNodes; i++) {
@@ -73,6 +75,7 @@ public class PrettyPrint {
         printIntoFile("solutions.txt", "\n" + print);
     }
 
+    // print structured solution, for each block print 1 if it is present in node, 0 otherwise
     private void printStructuredSolution(Solution solution) {
         String printSolution = addNodesCapacity() +
                 addAllBlocksValues(solution) +
@@ -125,6 +128,7 @@ public class PrettyPrint {
         return stringBuilder.toString();
     }
 
+    // print the sum of blocks size only if the block is present in the node
     private int[] getBlocksSumSizePerNode(Solution solution) {
         int[] sumXNode = new int[numNodes];
         for (int j = 0; j < numNodes; j++) {
@@ -137,6 +141,7 @@ public class PrettyPrint {
         return sumXNode;
     }
 
+    // print solution ready for the tool to move hadoop blocks
     private void printNewFileLocation(Solution solution, int n_solution) {
         printIntoFile("FilesLocation_" + n_solution + ".txt", addBlocks(solution));
     }
