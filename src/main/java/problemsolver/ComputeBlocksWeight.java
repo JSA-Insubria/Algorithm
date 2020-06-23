@@ -42,7 +42,7 @@ public class ComputeBlocksWeight {
         int[] weight = new int[positionMap.size()];
         for (Integer integer : sortedKeys) {
             weight[integer] = positionMap.get(integer);
-            System.out.println("Block " + integer + ": " + weight[integer]);
+            System.out.println("Block: " + integer + " - weight: " + weight[integer]);
         }
         weightMin = Arrays.stream(weight).min().orElse(Integer.MAX_VALUE);
         weightMax = Arrays.stream(weight).sum();

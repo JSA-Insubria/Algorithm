@@ -62,7 +62,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void setSolverTimeLimit(Solver solverTimeLimit) {
-        solverTimeLimit.limitTime("2m");
+        solverTimeLimit.limitTime("3h");
     }
 
     private Model setModel() {
