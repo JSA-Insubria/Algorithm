@@ -19,7 +19,7 @@ public class ConstraintsProblemSolverPareto {
     private int[] nodesCapacity;
 
     private int numItems;
-    private int[] replicasSizeArray;
+    private int[] blocksSize;
 
     private int replica_factor;
 
@@ -48,8 +48,8 @@ public class ConstraintsProblemSolverPareto {
         List<Solution> solutions = solver.findParetoFront(z, Model.MAXIMIZE);
 
         //Print Solutions
-        PrettyPrint prettyPrint = new PrettyPrint(nodeList, nodesCapacity, files, nBlocks, replicasSizeArray, x, z);
-        prettyPrint.printSolutions(solutions);
+        PrettyPrint prettyPrint = new PrettyPrint(nodeList, nodesCapacity, files, nBlocks, blocksSize, x, z);
+        prettyPrint.print(solutions);
 
         solver.printStatistics();
     }
@@ -62,7 +62,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void setSolverTimeLimit(Solver solverTimeLimit) {
-        solverTimeLimit.limitTime("3h");
+        solverTimeLimit.limitTime("2m");
     }
 
     private Model setModel() {
@@ -113,9 +113,9 @@ public class ConstraintsProblemSolverPareto {
                 items[j] = x[j][i];
             }
             //value * block size, must be less than the node capacity
-            model.scalar(items, replicasSizeArray, "<=", nodesCapacity[i]).post();
+            model.scalar(items, blocksSize, "<=", nodesCapacity[i]).post();
             //value * block size, must be equal to sumXNode
-            model.scalar(items, replicasSizeArray, "=", sumXNode[i]).post();
+            model.scalar(items, blocksSize, "=", sumXNode[i]).post();
             model.scalar(items, weight, "=", z[i]).post();
         }
         //sumXNode of each node should be equal (attempt to load balance)
@@ -146,8 +146,8 @@ public class ConstraintsProblemSolverPareto {
             }
         }
         numItems = filesList.size();
-        replicasSizeArray = new int[filesList.size()];
-        replicasSizeArray = filesList.stream().mapToInt(i -> i).toArray();
+        blocksSize = new int[filesList.size()];
+        blocksSize = filesList.stream().mapToInt(i -> i).toArray();
     }
 
     private void getReplicationFactor() {

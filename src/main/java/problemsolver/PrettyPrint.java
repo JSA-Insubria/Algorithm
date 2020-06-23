@@ -20,25 +20,35 @@ public class PrettyPrint {
     private final LinkedList<String> files;
     private final LinkedList<Integer> nBlocks;
 
-    private final int[] replicasSizeArray;
+    private final int[] blocksSize;
 
     private final IntVar[][] x;
     private final IntVar[] z;
 
     public PrettyPrint(List<Node> nodeList, int[] nodesCapacity, LinkedList<String> files,
-                       LinkedList<Integer> nBlocks, int[] replicasSizeArray, IntVar[][] x, IntVar[] z) {
+                       LinkedList<Integer> nBlocks, int[] blocksSize, IntVar[][] x, IntVar[] z) {
         this.nodeList = nodeList;
         this.nodesCapacity = nodesCapacity;
         this.files = files;
         this.nBlocks = nBlocks;
-        this.replicasSizeArray = replicasSizeArray;
+        this.blocksSize = blocksSize;
         this.x = x;
         this.z = z;
-        numItems = files.size();
+        numItems = blocksSize.length;
         numNodes = nodeList.size();
     }
 
-    public void printSolutions(List<Solution> solutionList) {
+    public void print(List<Solution> solutionList) {
+        printFirstLineVariableValue();
+        int n_solution = 1;
+        for (Solution solution : solutionList) {
+            printVariableValue(solution);
+            printNewFileLocation(solution, n_solution++);
+            printStructuredSolution(solution);
+        }
+    }
+
+    private void printFirstLineVariableValue() {
         String firstLine = "";
         for (int n = 0; n < numNodes; n++) {
             if (n == numNodes-1) {
@@ -48,85 +58,118 @@ public class PrettyPrint {
             }
         }
         printIntoFile("var.txt", firstLine);
-
-        int n_solution = 1;
-        for (Solution solution : solutionList) {
-            String print = "";
-            for (int i = 0; i < numNodes; i++) {
-                if (i == z.length-1) {
-                    print = print.concat("" + solution.getIntVal(z[i]));
-                } else {
-                    print = print.concat(solution.getIntVal(z[i]) + ",");
-                }
-            }
-            printIntoFile("var.txt", print);
-            printIntoFile("solutions.txt", "\n" + print);
-            prettyPrintFilesLocation(solution, n_solution++);
-            prettyPrint(solution);
-        }
     }
 
-    private void prettyPrint(Solution solution) {
-        String print = "\n\t";
-        for (int n = 0; n < numNodes; n++) {
-            print = print.concat(nodeList.get(n).getHostName() + "(" + nodesCapacity[n] + ")" + "\t");
+    private void printVariableValue(Solution solution) {
+        String print = "";
+        for (int i = 0; i < numNodes; i++) {
+            if (i == z.length-1) {
+                print = print.concat("" + solution.getIntVal(z[i]));
+            } else {
+                print = print.concat(solution.getIntVal(z[i]) + ",");
+            }
         }
-        print = print.concat("\n");
+        printIntoFile("var.txt", print);
+        printIntoFile("solutions.txt", "\n" + print);
+    }
+
+    private void printStructuredSolution(Solution solution) {
+        String printSolution = addNodesCapacity() +
+                addAllBlocksValues(solution) +
+                addBlocksSizeSum(solution);
+        printIntoFile("solutions.txt", printSolution);
+    }
+
+    private String addNodesCapacity() {
+        StringBuilder printSolution = new StringBuilder();
+        printSolution.append("\n\t");
+        for (int n = 0; n < numNodes; n++) {
+            printSolution.append(nodeList.get(n).getHostName()).append("(").append(nodesCapacity[n])
+                    .append(")").append("\t");
+        }
+        return printSolution.append("\n").toString();
+    }
+
+    private String addAllBlocksValues(Solution solution) {
+        StringBuilder stringBuilder = new StringBuilder();
         int nfile = 0, block = 1;
         for (int i = 0; i < numItems; i++) {
-            print = print.concat("T_" + (nfile+1) + "_" + block++ + ":" + "\t");
-            for (int j = 0; j < numNodes; j++) {
-                int val = solution.getIntVal(x[i][j]);
-                print = print.concat(val + "\t\t");
-            }
-            print = print.concat(" - " + files.get(nfile) + " blk: " + (block-1) + " - " + replicasSizeArray[i] + "\n");
-            if (block > nBlocks.get(nfile)) {
+            stringBuilder.append(addBlockValues(solution, nfile, block, i));
+            if (++block > nBlocks.get(nfile)) {
                 nfile++;
                 block = 1;
             }
         }
+        return stringBuilder.toString();
+    }
 
+    private String addBlockValues(Solution solution,int nfile, int block, int i) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("T_").append(nfile + 1).append("_").append(block).append(":").append("\t");
+        for (int j = 0; j < numNodes; j++) {
+            int val = solution.getIntVal(x[i][j]);
+            stringBuilder.append(val).append("\t\t");
+        }
+        stringBuilder.append(" - ").append(files.get(nfile)).append(" blk: ").append(block).append(" - ")
+                .append(blocksSize[i]).append("\n");
+        return stringBuilder.toString();
+    }
+
+    private String addBlocksSizeSum(Solution solution) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int[] sumXNode = getBlocksSumSizePerNode(solution);
+        stringBuilder.append("sum:" + "\t");
+        for (int n = 0; n < numNodes; n++) {
+            stringBuilder.append(sumXNode[n]).append("\t\t");
+        }
+        return stringBuilder.toString();
+    }
+
+    private int[] getBlocksSumSizePerNode(Solution solution) {
         int[] sumXNode = new int[numNodes];
         for (int j = 0; j < numNodes; j++) {
             for (int i = 0; i < numItems; i++) {
                 if (solution.getIntVal(x[i][j]) == 1) {
-                    sumXNode[j] += replicasSizeArray[i];
+                    sumXNode[j] += blocksSize[i];
                 }
             }
         }
-
-        print = print.concat("sum:" + "\t");
-        for (int n = 0; n < numNodes; n++) {
-            print = print.concat(sumXNode[n] + "\t\t");
-        }
-        printIntoFile("solutions.txt", print);
+        return sumXNode;
     }
 
-    private void prettyPrintFilesLocation(Solution solution, int n_solution) {
-        StringBuilder hadoop_sol = new StringBuilder();
+    private void printNewFileLocation(Solution solution, int n_solution) {
+        printIntoFile("FilesLocation_" + n_solution + ".txt", addBlocks(solution));
+    }
+
+    private String addBlocks(Solution solution) {
+        StringBuilder stringBuilder = new StringBuilder();
         int nfile = 0, block = 1;
         for (int i = 0; i < numItems; i++) {
-            hadoop_sol.append(files.get(nfile)).append(",");
-            for (int j = 0; j < numNodes; j++) {
-                int val = solution.getIntVal(x[i][j]);
-                if (val == 1) {
-                    hadoop_sol.append(nodeList.get(j).getName()).append(",");
-                }
-                if (j+1 == numNodes) {
-                    hadoop_sol.replace(hadoop_sol.length()-1, hadoop_sol.length(), "");
-                    hadoop_sol.append("\n");
-                }
-            }
-            if (block > nBlocks.get(nfile)) {
+            stringBuilder.append(files.get(nfile)).append(",").append(addBlocksLocations(solution, i));
+            if (++block > nBlocks.get(nfile)) {
                 nfile++;
                 block = 1;
             }
         }
-        printIntoFile("FilesLocation_" + n_solution + ".txt", hadoop_sol.toString());
+        return stringBuilder.toString();
+    }
+
+    private String addBlocksLocations(Solution solution, int i) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int j = 0; j < numNodes; j++) {
+            int val = solution.getIntVal(x[i][j]);
+            if (val == 1) {
+                stringBuilder.append(nodeList.get(j).getName()).append(",");
+            }
+            if (j+1 == numNodes) {
+                stringBuilder.replace(stringBuilder.length()-1, stringBuilder.length(), "");
+                stringBuilder.append("\n");
+            }
+        }
+        return stringBuilder.toString();
     }
 
     private void printIntoFile(String file, String line) {
-        //System.out.print(line);
         File path = new File("data" + File.separator + "/solutions");
         File fileName = new File(path + File.separator + file);
         try {
