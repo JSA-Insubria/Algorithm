@@ -1,16 +1,11 @@
 package benchmark;
 
-import fill.FillFiles;
 import fill.FillNodes;
-import fill.FillQueries;
 import model.*;
-import org.chocosolver.solver.search.loop.move.Move;
+import problemsolver.model.MovedBlock;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class TransferTime {
 

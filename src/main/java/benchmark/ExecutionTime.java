@@ -1,7 +1,5 @@
 package benchmark;
 
-import model.MovedBlock;
-
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

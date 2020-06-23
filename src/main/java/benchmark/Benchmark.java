@@ -1,6 +1,6 @@
 package benchmark;
 
-import model.MovedBlock;
+import problemsolver.model.MovedBlock;
 
 import java.io.*;
 import java.math.BigDecimal;
