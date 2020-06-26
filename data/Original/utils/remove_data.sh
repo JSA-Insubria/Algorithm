@@ -16,5 +16,6 @@ for (( i=$firstNode; i<=$lastNode; i++ )) do
 done
 
 docker exec -u hadoop -it nodemaster rm /home/hadoop/QueryExecutionTime.log
+docker exec -u hadoop -it nodemaster rm /home/hadoop/QueryCPUTime.log
 docker exec -u hadoop -it nodemaster rm /home/hadoop/DataStreamer.log
 docker exec -u hadoop -it nodemaster rm /home/hadoop/containers.log

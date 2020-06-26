@@ -29,6 +29,7 @@ for j in {1..22}; do
 		docker cp nodemaster:/home/hadoop/containers.log q"$j"/q"$j"_"$i"/containers.log
 		docker cp nodemaster:/home/hadoop/DataStreamer.log q"$j"/q"$j"_"$i"/data_streamer/DataStreamer_nodemaster.log
 		docker cp nodemaster:/home/hadoop/QueryExecutionTime.log q"$j"/q"$j"_"$i"/QueryExecutionTime.log
+		docker cp nodemaster:/home/hadoop/QueryCPUTime.log q"$j"/q"$j"_"$i"/QueryCPUTime.log
 		sh utils/remove_data.sh
 	done
 done
