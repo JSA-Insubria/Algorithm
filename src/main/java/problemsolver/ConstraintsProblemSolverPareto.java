@@ -132,7 +132,7 @@ public class ConstraintsProblemSolverPareto {
         numNodes = i;
     }
 
-    //get files informations and blocks size in MB
+    //get files information and blocks size in MB
     private void getFilesInformation() {
         files = new LinkedList<>();
         nBlocks = new LinkedList<>();
