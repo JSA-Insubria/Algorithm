@@ -1,4 +1,4 @@
-package problemsolver.model;
+package benchmark.model;
 
 public class MovedBlock {
 

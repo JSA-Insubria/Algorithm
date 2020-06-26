@@ -1,5 +1,7 @@
 package benchmark;
 
+import benchmark.model.QueryStats;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,44 +15,62 @@ public class ExecutionTime {
         this.folder = folder;
     }
 
-    public HashMap<String, String> getExecutionTime() {
-        return readTimes();
+    public Map<String, String> getExecutionTime() {
+        return readQueryFolder();
     }
 
-    private HashMap<String, String> readTimes() {
-        HashMap<String, String> queriesMap = new HashMap<>();
+    private Map<String, String> readQueryFolder() {
+        Map<String, String> map = new HashMap<>();
         File directory = new File(folder);
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
             for (File file : folderFiles) {
-                String queryName = file.getName();
-                if (queryName.contains("q")) {
-                    double mean = 0;
-                    File[] queryFolders = file.listFiles();
-                    if (queryFolders != null) {
-                        double sum = 0;
-                        for (File qDir : queryFolders) {
-                            String execNum = qDir.getName().substring(qDir.getName().lastIndexOf("_") + 1);
-                            BufferedReader bufferedReader = null;
-                            try {
-                                bufferedReader = new BufferedReader(new FileReader(qDir + "/QueryExecutionTime.log"));
-                                String line;
-                                while ((line = bufferedReader.readLine()) != null) {
-                                    String time = line.substring(line.lastIndexOf(":") + 2, line.lastIndexOf(" "));
-                                    sum += Double.parseDouble(time);
-                                    System.out.println("Query: " + queryName + "_" + execNum + " -> Time: " + time);
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        mean = BigDecimal.valueOf(sum / queryFolders.length).setScale(3, RoundingMode.HALF_UP).doubleValue();
-                        queriesMap.put(queryName, String.valueOf(mean));
-                    }
+                if (file.getName().contains("q")) {
+                    map.putAll(readTestFolder(file));
                 }
             }
         }
-        return queriesMap;
+        return map;
+    }
+
+    private Map<String, String> readTestFolder(File file) {
+        List<Double> queryTimeList = new ArrayList<>();
+        String queryName = file.getName();
+        if (queryName.contains("q")) {
+            File[] queryFolders = file.listFiles();
+            if (queryFolders != null) {
+                for (File qDir : queryFolders) {
+                    queryTimeList.add(readQueryExecutionTime(qDir));
+                }
+            }
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put(queryName, getExecutionTimeMean(queryTimeList));
+        return map;
+    }
+
+    private String getExecutionTimeMean(List<Double> queryTimeList) {
+        int num = queryTimeList.size();
+        return String.valueOf(roundValue(queryTimeList.stream().mapToDouble(Double::doubleValue).sum()/num));
+    }
+
+    private double readQueryExecutionTime(File qDir) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(qDir + "/QueryExecutionTime.log"));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains("seconds")) {
+                    return Double.parseDouble(line.substring(line.lastIndexOf(":") + 2, line.lastIndexOf(" ")));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private double roundValue(Double value) {
+        return BigDecimal.valueOf(value).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
 }

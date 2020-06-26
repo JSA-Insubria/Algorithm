@@ -1,6 +1,6 @@
 package benchmark;
 
-import problemsolver.model.MovedBlock;
+import benchmark.model.QueryStats;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -9,24 +9,24 @@ import java.util.*;
 
 public class Benchmark {
 
-    //private static final String folder = "data/" + "Original/";
-    private static final String folder = "data/" + "First/";
+    private static final String folder = "data/" + "Original/";
+    //private static final String folder = "data/" + "First/";
     //private static final String folder = "data/" + "Mid/";
     //private static final String folder = "data/" + "Last/";
 
     private static int nQueries = 0;
-    private static HashMap<String, String> queriesMap;
-    private static Map<String, MovedBlock> movedBlockMap;
+    private static Map<String, String> executionTimeMap;
+    private static Map<String, QueryStats> cpuTimeMap;
 
     public static void main(String[] args) {
         deleteTimeMean();
 
-        TransferTime transferTime = new TransferTime(folder);
-        movedBlockMap = transferTime.getTransferTime();
         ExecutionTime executionTime = new ExecutionTime(folder);
-        queriesMap = executionTime.getExecutionTime();
+        executionTimeMap = executionTime.getExecutionTime();
+        CPUTime cpuTime = new CPUTime(folder);
+        cpuTimeMap = cpuTime.getCPUTime();
 
-        List<String> sortedKeys = new ArrayList<String>(queriesMap.keySet());
+        List<String> sortedKeys = new ArrayList<String>(executionTimeMap.keySet());
         sortedKeys.sort(new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
@@ -36,31 +36,31 @@ public class Benchmark {
             }
         });
 
-        nQueries = queriesMap.size();
+        nQueries = executionTimeMap.size();
         int[] tQueries = readQueriesTimes();
 
         addTimesToQueries(sortedKeys, tQueries);
-        addTimesToMovedBlocks(sortedKeys, tQueries);
+        addTimesToQueryStats(sortedKeys, tQueries);
         prettyPrint(sortedKeys, tQueries);
     }
 
     private static void addTimesToQueries(List<String> sortedKeys, int[] tQueries) {
         int i = 0;
         for (String key : sortedKeys) {
-            double newTime = Double.parseDouble(queriesMap.get(key)) * tQueries[i++];
+            double newTime = Double.parseDouble(executionTimeMap.get(key)) * tQueries[i++];
             newTime = BigDecimal.valueOf(newTime).setScale(3, RoundingMode.HALF_UP).doubleValue();
-            queriesMap.replace(key, String.valueOf(newTime));
+            executionTimeMap.replace(key, String.valueOf(newTime));
         }
     }
 
-    private static void addTimesToMovedBlocks(List<String> sortedKeys, int[] tQueries) {
+    private static void addTimesToQueryStats(List<String> sortedKeys, int[] tQueries) {
         int i = 0;
         for (String key : sortedKeys) {
-            MovedBlock old = movedBlockMap.get(key);
-            long bytes = old.getBytes() * tQueries[i];
-            double duration = old.getDuration() * tQueries[i++];
-            duration = BigDecimal.valueOf(duration).setScale(3, RoundingMode.HALF_UP).doubleValue();
-            movedBlockMap.replace(key, new MovedBlock("", "", "", bytes, duration));
+            QueryStats old = cpuTimeMap.get(key);
+            double cpuTime = old.getCpuTimeSpent() * tQueries[i];
+            long hdfsRead = old.getHdfsRead() * tQueries[i];
+            long hdfsWrite = old.getHdfsWrite() * tQueries[i++];
+            cpuTimeMap.replace(key, new QueryStats(roundValue(cpuTime), hdfsRead, hdfsWrite));
         }
     }
 
@@ -87,15 +87,17 @@ public class Benchmark {
         stringBuilder.append("query").append(",")
                 .append("times").append(",")
                 .append("mean").append(",")
-                .append("transferred_bytes").append(",")
-                .append("transferred_time").append("\n");
+                .append("cputime").append(",")
+                .append("hdfsread").append(",")
+                .append("hdfswrite").append("\n");
         int i = 0;
         for (String key : sortedKeys) {
             stringBuilder.append(key).append(",")
                     .append(tQueries[i++]).append(",")
-                    .append(queriesMap.get(key)).append(",")
-                    .append(movedBlockMap.get(key).getBytes()).append(",")
-                    .append(movedBlockMap.get(key).getDuration()).append("\n");
+                    .append(executionTimeMap.get(key)).append(",")
+                    .append(cpuTimeMap.get(key).getCpuTimeSpent()).append(",")
+                    .append(cpuTimeMap.get(key).getHdfsRead()).append(",")
+                    .append(cpuTimeMap.get(key).getHdfsWrite()).append("\n");
         }
         printTimeMean(stringBuilder.toString());
     }
@@ -116,6 +118,10 @@ public class Benchmark {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static double roundValue(Double value) {
+        return BigDecimal.valueOf(value).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
 }

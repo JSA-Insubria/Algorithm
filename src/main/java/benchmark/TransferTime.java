@@ -2,7 +2,7 @@ package benchmark;
 
 import fill.FillNodes;
 import model.*;
-import problemsolver.model.MovedBlock;
+import benchmark.model.MovedBlock;
 
 import java.io.*;
 import java.util.*;
