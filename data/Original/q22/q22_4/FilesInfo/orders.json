@@ -1,0 +1,97 @@
+{
+  "fileName" : "orders",
+  "filePath" : "hdfs://nodemaster:9000/user/hive/warehouse/orders/orders.tbl",
+  "fileSize" : 870187306,
+  "blockLocations" : [ {
+    "blockId" : "blk_1073741833_1009",
+    "blockLocation" : {
+      "hosts" : [ "node3", "node7", "node6" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.4:9866", "172.18.0.8:9866", "172.18.0.7:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.4:9866", "/default-rack/172.18.0.8:9866", "/default-rack/172.18.0.7:9866" ],
+      "storageIds" : [ "DS-9ec31762-7ca3-4ec0-b265-6ff0b16012c4", "DS-794683da-48f9-47cb-80d5-f83b99913a0b", "DS-59b638d8-2e96-4a0b-b1f4-27e72579b7c8" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 0,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741834_1010",
+    "blockLocation" : {
+      "hosts" : [ "node5", "node6", "node10" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.6:9866", "172.18.0.7:9866", "172.18.0.11:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.6:9866", "/default-rack/172.18.0.7:9866", "/default-rack/172.18.0.11:9866" ],
+      "storageIds" : [ "DS-510f936c-71ef-4876-b5f2-3cf96b4fbb3d", "DS-59b638d8-2e96-4a0b-b1f4-27e72579b7c8", "DS-efbcd717-8ac4-420f-b69d-86268e701d33" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 134217728,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741835_1011",
+    "blockLocation" : {
+      "hosts" : [ "node4", "node9", "node6" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.5:9866", "172.18.0.10:9866", "172.18.0.7:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.5:9866", "/default-rack/172.18.0.10:9866", "/default-rack/172.18.0.7:9866" ],
+      "storageIds" : [ "DS-549d54c8-ddaa-479a-a1c5-7761e6926c22", "DS-51bc4e0b-7688-4fed-b582-5ceb97621812", "DS-59b638d8-2e96-4a0b-b1f4-27e72579b7c8" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 268435456,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741836_1012",
+    "blockLocation" : {
+      "hosts" : [ "node5", "node11", "node8" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.6:9866", "172.18.0.12:9866", "172.18.0.9:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.6:9866", "/default-rack/172.18.0.12:9866", "/default-rack/172.18.0.9:9866" ],
+      "storageIds" : [ "DS-510f936c-71ef-4876-b5f2-3cf96b4fbb3d", "DS-d4f5f58a-aa85-428a-a155-ee1f4876f03e", "DS-2f67b030-401b-46ab-a992-33e160d7dab0" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 402653184,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741837_1013",
+    "blockLocation" : {
+      "hosts" : [ "node8", "node10", "node5" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.9:9866", "172.18.0.11:9866", "172.18.0.6:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.9:9866", "/default-rack/172.18.0.11:9866", "/default-rack/172.18.0.6:9866" ],
+      "storageIds" : [ "DS-2f67b030-401b-46ab-a992-33e160d7dab0", "DS-efbcd717-8ac4-420f-b69d-86268e701d33", "DS-510f936c-71ef-4876-b5f2-3cf96b4fbb3d" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 536870912,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741838_1014",
+    "blockLocation" : {
+      "hosts" : [ "node4", "node10", "node3" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.5:9866", "172.18.0.11:9866", "172.18.0.4:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.5:9866", "/default-rack/172.18.0.11:9866", "/default-rack/172.18.0.4:9866" ],
+      "storageIds" : [ "DS-549d54c8-ddaa-479a-a1c5-7761e6926c22", "DS-efbcd717-8ac4-420f-b69d-86268e701d33", "DS-9ec31762-7ca3-4ec0-b265-6ff0b16012c4" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 671088640,
+      "length" : 134217728,
+      "corrupt" : false
+    }
+  }, {
+    "blockId" : "blk_1073741839_1015",
+    "blockLocation" : {
+      "hosts" : [ "node2", "node7", "node5" ],
+      "cachedHosts" : [ ],
+      "names" : [ "172.18.0.3:9866", "172.18.0.8:9866", "172.18.0.6:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.3:9866", "/default-rack/172.18.0.8:9866", "/default-rack/172.18.0.6:9866" ],
+      "storageIds" : [ "DS-fa820258-52aa-46ac-b72c-ad92c390b528", "DS-794683da-48f9-47cb-80d5-f83b99913a0b", "DS-510f936c-71ef-4876-b5f2-3cf96b4fbb3d" ],
+      "storageTypes" : [ "DISK", "DISK", "DISK" ],
+      "offset" : 805306368,
+      "length" : 64880938,
+      "corrupt" : false
+    }
+  } ]
+}

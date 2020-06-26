@@ -1,0 +1,33 @@
+{
+  "jobName" : "job_1593115633826_0141",
+  "paths" : [ "hdfs://nodemaster:9000/tmp/hive/hadoop/96a226c0-a2f0-4e58-811d-df986d75b3e4/hive_2020-06-25_21-48-22_471_7502644965065433740-1/-mr-10007" ],
+  "locations" : [ "node4" ],
+  "jobDataPaths" : [ {
+    "path" : "hdfs://nodemaster:9000/tmp/hive/hadoop/96a226c0-a2f0-4e58-811d-df986d75b3e4/hive_2020-06-25_21-48-22_471_7502644965065433740-1/-mr-10007",
+    "filesList" : [ {
+      "file" : "HdfsLocatedFileStatus{path=hdfs://nodemaster:9000/tmp/hive/hadoop/96a226c0-a2f0-4e58-811d-df986d75b3e4/hive_2020-06-25_21-48-22_471_7502644965065433740-1/-mr-10007/000000_0; isDirectory=false; length=276; replication=3; blocksize=134217728; modification_time=1593121930731; access_time=1593121930670; owner=hadoop; group=supergroup; permission=rw-r--r--; isSymlink=false; hasAcl=false; isEncrypted=false; isErasureCoded=false}",
+      "blockList" : [ {
+        "blockId" : 0,
+        "replicaList" : [ {
+          "replicaId" : 1,
+          "location" : "172.18.0.5:9866",
+          "storageId" : "DS-549d54c8-ddaa-479a-a1c5-7761e6926c22",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.5:9866"
+        }, {
+          "replicaId" : 2,
+          "location" : "172.18.0.6:9866",
+          "storageId" : "DS-510f936c-71ef-4876-b5f2-3cf96b4fbb3d",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.6:9866"
+        }, {
+          "replicaId" : 3,
+          "location" : "172.18.0.12:9866",
+          "storageId" : "DS-d4f5f58a-aa85-428a-a155-ee1f4876f03e",
+          "storageType" : "DISK",
+          "topologyPath" : "/default-rack/172.18.0.12:9866"
+        } ]
+      } ]
+    } ]
+  } ]
+}
