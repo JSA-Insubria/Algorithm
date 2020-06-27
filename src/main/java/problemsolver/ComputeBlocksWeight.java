@@ -69,6 +69,16 @@ public class ComputeBlocksWeight {
                 }
             }
         }
+        return fillOtherFilesWithWeightZero(map);
+    }
+
+    private Map<Integer, Integer> fillOtherFilesWithWeightZero(Map<Integer, Integer> map) {
+        int numOfBlocks = nBlocks.stream().reduce(0, Integer::sum);
+        for (int i = 0; i < numOfBlocks; i++) {
+            if (!map.containsKey(i)) {
+                map.put(i, 0);
+            }
+        }
         return map;
     }
 
