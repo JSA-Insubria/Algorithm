@@ -10,41 +10,54 @@ import java.util.*;
 public class TransferTime {
 
     private final String folder;
+    private List<Node> nodeList;
 
     public TransferTime(String folder) {
         this.folder = folder;
     }
 
     public Map<String, MovedBlock> getTransferTime() {
-        FillNodes fillNodes = new FillNodes(folder + "q1/q1_1/");
-        List<Node> nodeList = fillNodes.readNodes();
-        return readTimes(nodeList);
+        FillNodes fillNodes = new FillNodes("data" + File.separator);
+        nodeList = fillNodes.readNodes();
+        return readQueryFolder();
     }
 
-    private Map<String, MovedBlock> readTimes(List<Node> nodeList) {
+    private Map<String, MovedBlock> readQueryFolder() {
         Map<String, MovedBlock> map = new HashMap<>();
         File directory = new File(folder);
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
-            for (File file : folderFiles) { //q1, q2, ..
-                String queryName = file.getName();
-                if (queryName.contains("q")) {
-                    File[] queryFolders = file.listFiles();
-                    if (queryFolders != null) {
-                        List<MovedBlock> toMean = new ArrayList<>();
-                        for (File qDir : queryFolders) {  //q1_1, q1_2, ..
-                            List<MovedBlock> movedBlocksPerSubQueries = new ArrayList<>();
-                            for (Node node : nodeList) {
-                                movedBlocksPerSubQueries.addAll(readQueriesTimes(node.getHostName(), qDir.getPath()));
-                            }
-                            toMean.add(getSumOfMovedBlock(movedBlocksPerSubQueries));
-                        }
-                        map.put(queryName, getMeanOfMovedBlock(toMean));
-                    }
+            for (File file : folderFiles) {
+                if (file.getName().contains("q")) {
+                    map.putAll(readTestFolder(file));
                 }
             }
         }
         return map;
+    }
+
+    private Map<String, MovedBlock> readTestFolder(File file) {
+        List<MovedBlock> movedBlockList = new ArrayList<>();
+        String queryName = file.getName();
+        if (queryName.contains("q")) {
+            File[] queryFolders = file.listFiles();
+            if (queryFolders != null) {
+                for (File qDir : queryFolders) {
+                    movedBlockList.add(getMovedBlockSum(qDir));
+                }
+            }
+        }
+        Map<String, MovedBlock> map = new HashMap<>();
+        map.put(queryName, getMeanOfMovedBlock(movedBlockList));
+        return map;
+    }
+
+    private MovedBlock getMovedBlockSum(File qDir) {
+        List<MovedBlock> movedBlocksPerSubQueries = new ArrayList<>();
+        for (Node node : nodeList) {
+            movedBlocksPerSubQueries.addAll(readQueriesTimes(node.getHostName(), qDir.getPath()));
+        }
+        return getSumOfMovedBlock(movedBlocksPerSubQueries);
     }
 
     private MovedBlock getSumOfMovedBlock(List<MovedBlock> movedBlockList) {
@@ -72,8 +85,8 @@ public class TransferTime {
     private List<MovedBlock> readQueriesTimes(String node, String subPath) {
         List<MovedBlock> movedList = new ArrayList<>();
         try {
-            BufferedReader bufferedReader = new BufferedReader(
-                    new FileReader(subPath + "/hdfs_read_write/hdfs_read_" + node + ".log"));
+            BufferedReader bufferedReader = new BufferedReader( new FileReader(subPath +
+                    File.separator + "hdfs_read_write" + File.separator + "hdfs_read_" + node + ".log"));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (!line.contains("NONMAPREDUCE")) {
@@ -112,7 +125,7 @@ public class TransferTime {
             double duration = Double.parseDouble(split[8].trim().substring(split[8].trim().indexOf(" ")).trim());
             String block = split[7].substring(split[7].lastIndexOf(":")+1);
             double seconds = duration / 1_000_000_000.0;
-            return new MovedBlock(src, dest, block, bytes / (1024 * 1024), seconds);
+            return new MovedBlock(src, dest, block, bytes, seconds);
         }
     }
 

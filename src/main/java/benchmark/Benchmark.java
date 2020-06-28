@@ -1,5 +1,6 @@
 package benchmark;
 
+import benchmark.model.MovedBlock;
 import benchmark.model.QueryStats;
 
 import java.io.*;
@@ -15,12 +16,15 @@ public class Benchmark {
     //private static final String folder = "data/" + "Last/";
 
     private static int nQueries = 0;
+    private static Map<String, MovedBlock> movedBlockMap;
     private static Map<String, String> executionTimeMap;
     private static Map<String, QueryStats> cpuTimeMap;
 
     public static void main(String[] args) {
         deleteTimeMean();
 
+        TransferTime transferTime = new TransferTime(folder);
+        movedBlockMap = transferTime.getTransferTime();
         ExecutionTime executionTime = new ExecutionTime(folder);
         executionTimeMap = executionTime.getExecutionTime();
         CPUTime cpuTime = new CPUTime(folder);
@@ -39,9 +43,22 @@ public class Benchmark {
         nQueries = executionTimeMap.size();
         int[] tQueries = readQueriesTimes();
 
+        addTimesToMovedBlocks(sortedKeys, tQueries);
         addTimesToQueries(sortedKeys, tQueries);
         addTimesToQueryStats(sortedKeys, tQueries);
         prettyPrint(sortedKeys, tQueries);
+    }
+
+
+    private static void addTimesToMovedBlocks(List<String> sortedKeys, int[] tQueries) {
+        int i = 0;
+        for (String key : sortedKeys) {
+            MovedBlock old = movedBlockMap.get(key);
+            long bytes = old.getBytes() * tQueries[i];
+            double duration = old.getDuration() * tQueries[i++];
+            duration = BigDecimal.valueOf(duration).setScale(3, RoundingMode.HALF_UP).doubleValue();
+            movedBlockMap.replace(key, new MovedBlock("", "", "", bytes, duration));
+        }
     }
 
     private static void addTimesToQueries(List<String> sortedKeys, int[] tQueries) {
@@ -89,7 +106,9 @@ public class Benchmark {
                 .append("mean").append(",")
                 .append("cputime").append(",")
                 .append("hdfsread").append(",")
-                .append("hdfswrite").append("\n");
+                .append("hdfswrite").append(",")
+                .append("transferred_bytes").append(",")
+                .append("transferred_time").append("\n");
         int i = 0;
         for (String key : sortedKeys) {
             stringBuilder.append(key).append(",")
@@ -97,7 +116,9 @@ public class Benchmark {
                     .append(executionTimeMap.get(key)).append(",")
                     .append(cpuTimeMap.get(key).getCpuTimeSpent()).append(",")
                     .append(cpuTimeMap.get(key).getHdfsRead()).append(",")
-                    .append(cpuTimeMap.get(key).getHdfsWrite()).append("\n");
+                    .append(cpuTimeMap.get(key).getHdfsWrite()).append(",")
+                    .append(movedBlockMap.get(key).getBytes()).append(",")
+                    .append(movedBlockMap.get(key).getDuration()).append("\n");
         }
         printTimeMean(stringBuilder.toString());
     }
