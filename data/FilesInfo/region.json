@@ -3,13 +3,13 @@
   "filePath" : "hdfs://nodemaster:9000/user/hive/warehouse/region/region.tbl",
   "fileSize" : 389,
   "blockLocations" : [ {
-    "blockId" : "blk_1073741870_1046",
+    "blockId" : "blk_1073741998_1174",
     "blockLocation" : {
-      "hosts" : [ "node3", "node8", "node6" ],
+      "hosts" : [ "node6", "node7", "node5" ],
       "cachedHosts" : [ ],
-      "names" : [ "172.18.0.4:9866", "172.18.0.9:9866", "172.18.0.7:9866" ],
-      "topologyPaths" : [ "/default-rack/172.18.0.4:9866", "/default-rack/172.18.0.9:9866", "/default-rack/172.18.0.7:9866" ],
-      "storageIds" : [ "DS-9ec31762-7ca3-4ec0-b265-6ff0b16012c4", "DS-2f67b030-401b-46ab-a992-33e160d7dab0", "DS-59b638d8-2e96-4a0b-b1f4-27e72579b7c8" ],
+      "names" : [ "172.18.0.7:9866", "172.18.0.8:9866", "172.18.0.6:9866" ],
+      "topologyPaths" : [ "/default-rack/172.18.0.7:9866", "/default-rack/172.18.0.8:9866", "/default-rack/172.18.0.6:9866" ],
+      "storageIds" : [ "DS-b7af29e5-ce3e-4cbd-8ae9-881b034c2e98", "DS-07402bd2-c37d-4f60-bc4f-8b43795ba1df", "DS-48fde77e-57a5-4947-b99a-6b7edf305f6b" ],
       "storageTypes" : [ "DISK", "DISK", "DISK" ],
       "offset" : 0,
       "length" : 389,
