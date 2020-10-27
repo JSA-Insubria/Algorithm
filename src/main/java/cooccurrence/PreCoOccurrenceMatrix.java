@@ -47,7 +47,8 @@ public class PreCoOccurrenceMatrix {
             matrix[j][0] = String.valueOf(map.getKey());
             List<Table> queryTables = map.getValue().getTables();
             for (Table table : queryTables) {
-                matrix[j][matrix0.indexOf(table.getName())] = String.valueOf(qNums[j-1]);
+                //matrix[j][matrix0.indexOf(table.getName())] = String.valueOf(qNums[j-1]); // if use zipf distribution
+                matrix[j][matrix0.indexOf(table.getName())] = String.valueOf(1);  // if not use zipf distribution
             }
             j++;
         }

@@ -10,10 +10,7 @@ import java.util.*;
 
 public class Benchmark {
 
-    private static final String folder = "data/" + "Original/";
-    //private static final String folder = "data/" + "First/";
-    //private static final String folder = "data/" + "Mid/";
-    //private static final String folder = "data/" + "Last/";
+    private static final String folder = "data" + File.separator + "test" + File.separator;
 
     private static int nQueries = 0;
     private static Map<String, MovedBlock> movedBlockMap;
@@ -43,12 +40,15 @@ public class Benchmark {
         nQueries = executionTimeMap.size();
         int[] tQueries = readQueriesTimes();
 
-        addTimesToMovedBlocks(sortedKeys, tQueries);
-        addTimesToQueries(sortedKeys, tQueries);
-        addTimesToQueryStats(sortedKeys, tQueries);
+        //addZipfDistribution(sortedKeys, tQueries); //uncomment also in setMatrixValues of PreCoOccurrenceMatrix class
         prettyPrint(sortedKeys, tQueries);
     }
 
+    private static void addZipfDistribution(List<String> sortedKeys, int[] tQueries) {
+        addTimesToMovedBlocks(sortedKeys, tQueries);
+        addTimesToQueries(sortedKeys, tQueries);
+        addTimesToQueryStats(sortedKeys, tQueries);
+    }
 
     private static void addTimesToMovedBlocks(List<String> sortedKeys, int[] tQueries) {
         int i = 0;
@@ -84,7 +84,7 @@ public class Benchmark {
     private static int[] readQueriesTimes() {
         int[] numbers = new int[nQueries];
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("data/execute.sh"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("data" + File.separator + "execute.sh"));
             String line;
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
@@ -103,10 +103,9 @@ public class Benchmark {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("query").append(",")
                 .append("times").append(",")
-                .append("mean").append(",")
+                .append("executiontime").append(",")
                 .append("cputime").append(",")
                 .append("hdfsread").append(",")
-                .append("hdfswrite").append(",")
                 .append("transferred_bytes").append(",")
                 .append("transferred_time").append("\n");
         int i = 0;
@@ -116,7 +115,6 @@ public class Benchmark {
                     .append(executionTimeMap.get(key)).append(",")
                     .append(cpuTimeMap.get(key).getCpuTimeSpent()).append(",")
                     .append(cpuTimeMap.get(key).getHdfsRead()).append(",")
-                    .append(cpuTimeMap.get(key).getHdfsWrite()).append(",")
                     .append(movedBlockMap.get(key).getBytes()).append(",")
                     .append(movedBlockMap.get(key).getDuration()).append("\n");
         }

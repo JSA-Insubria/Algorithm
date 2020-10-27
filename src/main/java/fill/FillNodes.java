@@ -21,7 +21,7 @@ public class FillNodes {
 
     public List<Node> readNodes() {
         List<Node> nodeList = new ArrayList<>();
-        File directory = new File(path + "ClusterInfo");
+        File directory = new File(path + "q1" + File.separator + "q1_1" + File.separator + "ClusterInfo");
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
             for (File file : folderFiles) {

@@ -30,16 +30,27 @@ public class FillQueries {
 
     public List<Query> readQueries() {
         List<Query> queryList = new ArrayList<>();
-        File directory = new File(path + "QueryDataBlocks");
+        File directory = new File(path);
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
-            Arrays.sort(folderFiles);
             for (File file : folderFiles) {
-                queryList.add(getQuery(file));
+                if (file.getName().contains("q")) {
+                    queryList.add(readQueryFolder(file));
+                }
             }
         }
         fillTableList(queryList);
         return queryList;
+    }
+
+    private Query readQueryFolder(File file) {
+        File queryFolder = new File(file.getPath() + File.separator
+                + file.getName().concat("_1") + File.separator + "QueryDataBlocks");
+        File[] folderFiles = queryFolder.listFiles();
+        if (folderFiles != null) {
+            return getQuery(folderFiles[0]);
+        }
+        return new Query();
     }
 
     private void fillTableList(List<Query> queryList) {

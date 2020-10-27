@@ -62,7 +62,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void setSolverTimeLimit(Solver solverTimeLimit) {
-        solverTimeLimit.limitTime("3h");
+        solverTimeLimit.limitTime("30s");
     }
 
     private Model setModel() {
@@ -119,7 +119,8 @@ public class ConstraintsProblemSolverPareto {
             model.scalar(items, weight, "=", z[i]).post();
         }
         //sumXNode of each node should be equal (attempt to load balance)
-        model.atMostNValues(sumXNode, model.intVar(1, numNodes), false).post();
+        //model.atMostNValues(sumXNode, model.intVar(1, numNodes), false).post();
+        model.atMostNValues(sumXNode, model.intVar(numNodes), false).post();
     }
 
     // get nodes capacity in MB

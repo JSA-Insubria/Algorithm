@@ -42,16 +42,16 @@ public class CPUTime {
     private Map<String, QueryStats> readTestFolder(File file) {
         List<QueryStats> queryStatsList = new ArrayList<>();
         String queryName = file.getName();
-        if (queryName.contains("q")) {
+        Map<String, QueryStats> map = new HashMap<>();
+        if (queryName.contains("q") && file.isDirectory()) {
             File[] queryFolders = file.listFiles();
             if (queryFolders != null) {
                 for (File qDir : queryFolders) {
                     queryStatsList.add(readQueryCPUTime(qDir));
                 }
             }
+            map.put(queryName, getQueryStatsMean(queryStatsList));
         }
-        Map<String, QueryStats> map = new HashMap<>();
-        map.put(queryName, getQueryStatsMean(queryStatsList));
         return map;
     }
 
@@ -70,7 +70,7 @@ public class CPUTime {
 
     private QueryStats readQueryCPUTime(File qDir) {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(qDir + "/QueryCPUTime.log"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(qDir + File.separator + "QueryCPUTime.log"));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.contains("CPU")) {

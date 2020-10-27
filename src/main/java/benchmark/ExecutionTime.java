@@ -36,16 +36,16 @@ public class ExecutionTime {
     private Map<String, String> readTestFolder(File file) {
         List<Double> queryTimeList = new ArrayList<>();
         String queryName = file.getName();
-        if (queryName.contains("q")) {
+        Map<String, String> map = new HashMap<>();
+        if (queryName.contains("q") && file.isDirectory()) {
             File[] queryFolders = file.listFiles();
             if (queryFolders != null) {
                 for (File qDir : queryFolders) {
                     queryTimeList.add(readQueryExecutionTime(qDir));
                 }
             }
+            map.put(queryName, getExecutionTimeMean(queryTimeList));
         }
-        Map<String, String> map = new HashMap<>();
-        map.put(queryName, getExecutionTimeMean(queryTimeList));
         return map;
     }
 
@@ -56,7 +56,7 @@ public class ExecutionTime {
 
     private double readQueryExecutionTime(File qDir) {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(qDir + "/QueryExecutionTime.log"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(qDir + File.separator + "QueryExecutionTime.log"));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.contains("seconds")) {

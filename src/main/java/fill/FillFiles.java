@@ -24,7 +24,7 @@ public class FillFiles {
 
     public LinkedHashMap<String, DataFile> readFiles() {
         LinkedHashMap<String, DataFile> filesMap = new LinkedHashMap<>();
-        File directory = new File(path + "FilesInfo");
+        File directory = new File(path + "q1" + File.separator + "q1_1" + File.separator + "FilesInfo");
         File[] folderFiles = directory.listFiles();
         if (folderFiles != null) {
             for (File file : folderFiles) {
