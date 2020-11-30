@@ -12,6 +12,8 @@ import java.util.List;
 
 public class PrettyPrint {
 
+    private String path;
+
     private final int numNodes;
     private final List<Node> nodeList;
     private final int[] nodesCapacity;
@@ -26,7 +28,7 @@ public class PrettyPrint {
     private final IntVar[] z;
 
     public PrettyPrint(List<Node> nodeList, int[] nodesCapacity, LinkedList<String> files,
-                       LinkedList<Integer> nBlocks, int[] blocksSize, IntVar[][] x, IntVar[] z) {
+                       LinkedList<Integer> nBlocks, int[] blocksSize, IntVar[][] x, IntVar[] z, String path) {
         this.nodeList = nodeList;
         this.nodesCapacity = nodesCapacity;
         this.files = files;
@@ -36,6 +38,7 @@ public class PrettyPrint {
         this.z = z;
         numItems = blocksSize.length;
         numNodes = nodeList.size();
+        this.path = path;
     }
 
     public void print(List<Solution> solutionList) {
@@ -175,8 +178,7 @@ public class PrettyPrint {
     }
 
     private void printIntoFile(String file, String line) {
-        File path = new File("data" + File.separator + "/solutions");
-        File fileName = new File(path + File.separator + file);
+        File fileName = new File(path + "solutions" + File.separator + file);
         try {
             FileWriter myWriter = new FileWriter(fileName, true);
             myWriter.write(line + "\n");

@@ -19,10 +19,13 @@ import java.util.Map;
 
 public class Algorithm {
 
-    private static final String path = "data" + File.separator + "test" + File.separator;
+    private static String path = "algorithm_data" + File.separator;
 
     public static void main(String[] args) {
         createSolutionsFolder();
+        String root_path = path;
+        String folder = args[0];
+        path = path + folder + File.separator;
 
         LinkedHashMap<String, DataFile> files = new FillFiles(path).readFiles();
         List<Node> nodeList = new FillNodes(path).readNodes();
@@ -30,17 +33,17 @@ public class Algorithm {
         FillQueries fillQueries = new FillQueries(path, files);
         List<Query> queryList = fillQueries.readQueries();
 
-        PreCoOccurrenceMatrix preCoOccurrenceMatrix = new PreCoOccurrenceMatrix(queryList);
+        PreCoOccurrenceMatrix preCoOccurrenceMatrix = new PreCoOccurrenceMatrix(queryList, root_path);
         CoOccurrenceMatrix coOccurrenceMatrix = new CoOccurrenceMatrix(preCoOccurrenceMatrix.getMatrix());
         String[][] matrix = coOccurrenceMatrix.getMatrix();
 
         ConstraintsProblemSolverPareto constraintsProblemSolverPareto = new ConstraintsProblemSolverPareto(nodeList,
-                files, matrix, fillQueries.getTableList());
+                files, matrix, fillQueries.getTableList(), args[1], root_path);
         constraintsProblemSolverPareto.findOptimalSolutions();
     }
 
     private static void createSolutionsFolder() {
-        File solutionsPath = new File("data" + File.separator + "solutions");
+        File solutionsPath = new File(path + "solutions");
         try {
             if (solutionsPath.exists()) {
                 Files.walk(solutionsPath.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);

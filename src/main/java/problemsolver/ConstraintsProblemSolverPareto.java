@@ -10,6 +10,9 @@ import java.util.*;
 
 public class ConstraintsProblemSolverPareto {
 
+    private String time = "5h";
+    private String path;
+
     private final List<Node> nodeList;
     private final Map<String, DataFile> filesMap;
     private final String[][] coOccurrenceMatrix;
@@ -30,11 +33,13 @@ public class ConstraintsProblemSolverPareto {
     private IntVar[] z; //Pareto Variable
 
     public ConstraintsProblemSolverPareto(List<Node> nodeList, Map<String, DataFile> filesMap,
-                                          String[][] coOccurrenceMatrix, Map<String, Table> tableMap) {
+                                          String[][] coOccurrenceMatrix, Map<String, Table> tableMap, String time, String path) {
         this.nodeList = nodeList;
         this.filesMap = filesMap;
         this.coOccurrenceMatrix = coOccurrenceMatrix;
         this.tableMap = tableMap;
+        this.time = time;
+        this.path = path;
     }
 
     public void findOptimalSolutions() {
@@ -48,7 +53,7 @@ public class ConstraintsProblemSolverPareto {
         List<Solution> solutions = solver.findParetoFront(z, Model.MAXIMIZE);
 
         //Print Solutions
-        PrettyPrint prettyPrint = new PrettyPrint(nodeList, nodesCapacity, files, nBlocks, blocksSize, x, z);
+        PrettyPrint prettyPrint = new PrettyPrint(nodeList, nodesCapacity, files, nBlocks, blocksSize, x, z, path);
         prettyPrint.print(solutions);
 
         solver.printStatistics();
@@ -62,7 +67,7 @@ public class ConstraintsProblemSolverPareto {
     }
 
     private void setSolverTimeLimit(Solver solverTimeLimit) {
-        solverTimeLimit.limitTime("30s");
+        solverTimeLimit.limitTime(time);
     }
 
     private Model setModel() {

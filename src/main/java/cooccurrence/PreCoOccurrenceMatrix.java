@@ -13,9 +13,11 @@ public class PreCoOccurrenceMatrix {
 
     private String[][] matrix;
     private final List<Query> queries;
+    private final String path;
 
-    public PreCoOccurrenceMatrix(List<Query> queries) {
+    public PreCoOccurrenceMatrix(List<Query> queries, String path) {
         this.queries = queries;
+        this.path = path;
     }
 
     public String[][] getMatrix() {
@@ -109,7 +111,7 @@ public class PreCoOccurrenceMatrix {
     private int[] readQueriesTimes() {
         int[] numbers = new int[matrix.length];
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("data/execute.sh"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "execute.sh"));
             String line;
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
