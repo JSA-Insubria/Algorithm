@@ -10,7 +10,8 @@ import java.util.*;
 
 public class Benchmark {
 
-    private static final String folder = "data" + File.separator + "test" + File.separator;
+    private static String path = "algorithm_data" + File.separator;
+    private static final String execution_sh_path = "algorithm_data" + File.separator;
 
     private static int nQueries = 0;
     private static Map<String, MovedBlock> movedBlockMap;
@@ -18,13 +19,14 @@ public class Benchmark {
     private static Map<String, QueryStats> cpuTimeMap;
 
     public static void main(String[] args) {
+        path = path + args[0] + File.separator;
         deleteTimeMean();
 
-        TransferTime transferTime = new TransferTime(folder);
+        TransferTime transferTime = new TransferTime(path);
         movedBlockMap = transferTime.getTransferTime();
-        ExecutionTime executionTime = new ExecutionTime(folder);
+        ExecutionTime executionTime = new ExecutionTime(path);
         executionTimeMap = executionTime.getExecutionTime();
-        CPUTime cpuTime = new CPUTime(folder);
+        CPUTime cpuTime = new CPUTime(path);
         cpuTimeMap = cpuTime.getCPUTime();
 
         List<String> sortedKeys = new ArrayList<String>(executionTimeMap.keySet());
@@ -84,7 +86,7 @@ public class Benchmark {
     private static int[] readQueriesTimes() {
         int[] numbers = new int[nQueries];
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("data" + File.separator + "execute.sh"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(execution_sh_path + "execute.sh"));
             String line;
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
@@ -122,14 +124,14 @@ public class Benchmark {
     }
 
     private static void deleteTimeMean() {
-        File fileName = new File(folder + "benchmark.csv");
+        File fileName = new File(path + "benchmark.csv");
         if (fileName.exists()) {
             fileName.delete();
         }
     }
 
     private static void printTimeMean(String line) {
-        File fileName = new File(folder + "benchmark.csv");
+        File fileName = new File(path + "benchmark.csv");
         try {
             FileWriter myWriter = new FileWriter(fileName, true);
             myWriter.write(line + "\n");

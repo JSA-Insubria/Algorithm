@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Algorithm</mainClass>
+                            <mainClass>benchmark.Benchmark</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
